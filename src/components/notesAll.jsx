@@ -1,13 +1,21 @@
 import React from "react";
 import Note from "./Note";
-import notes from "../notesArray.js";
 
-function getAllNotes(note) {
-  return <Note key={note.key} title={note.title} content={note.content} />;
-}
+function AllNotes(props) {
+  function getAllNotes(note, index) {
+    console.log(index);
+    return (
+      <Note
+        key={index}
+        id={index}
+        title={note.title}
+        content={note.content}
+        deleteNote={props.deleteNote}
+      />
+    );
+  }
 
-function AllNotes() {
-  return <div>{notes.map(getAllNotes)}</div>;
+  return <div>{props.notes.map(getAllNotes)}</div>;
 }
 
 export default AllNotes;
