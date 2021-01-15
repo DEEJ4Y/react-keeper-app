@@ -1,43 +1,65 @@
 import React, { useState } from "react";
+import AddIcon from "@material-ui/icons/Add";
+import Fab from "@material-ui/core/Fab";
+import Zoom from "@material-ui/core/Zoom";
 
 function CreateArea(props) {
-  const [newNote, setNewNote] = useState({ title: "", content: "" });
+  const [isExpanded, setExpanded] = useState(false);
 
-  function handleNoteChange(event) {
+  const [note, setNote] = useState({
+    title: "",
+    content: ""
+  });
+
+  function handleChange(event) {
     const { name, value } = event.target;
-    setNewNote((previous) => {
-      return { ...previous, [name]: value };
+
+    setNote(prevNote => {
+      return {
+        ...prevNote,
+        [name]: value
+      };
     });
   }
 
-  function createNewNote(event) {
-    const { title, content } = newNote;
-    if (title !== "" || content !== "") {
-      props.addNewNote(newNote);
-    }
-
-    setNewNote({ title: "", content: "" });
-
+  function submitNote(event) {
+    props.onAdd(note);
+    setNote({
+      title: "",
+      content: ""
+    });
     event.preventDefault();
+  }
+
+  function expand() {
+    setExpanded(true);
   }
 
   return (
     <div>
-      <form>
-        <input
-          name="title"
-          placeholder="Title"
-          onChange={handleNoteChange}
-          value={newNote.title}
-        />
+      <form className="create-note">
+        {isExpanded && (
+          <input
+            name="title"
+            onChange={handleChange}
+            value={note.title}
+            placeholder="Title"
+          />
+        )}
+
         <textarea
           name="content"
+          onClick={expand}
+          onChange={handleChange}
+          value={note.content}
           placeholder="Take a note..."
-          rows="3"
-          onChange={handleNoteChange}
-          value={newNote.content}
+          rows={isExpanded ? 3 : 1}
         />
-        <button onClick={createNewNote}>Add</button>
+        <Zoom in={isExpanded}>
+          <Fab onClick={submitNote}>
+            <AddIcon />
+          </Fab>
+        </Zoom>
       </form>
     </div>
   );
